@@ -7,17 +7,16 @@
     <style>
         :root {
             --dice-bg: #ffffff;
-            --dice-dot: #333;
-            --dice-red: #e74c3c;
+            --dice-dot: #222; /* 點數顏色加深 */
+            --dice-red: #d63031;
             --primary: #e94560;
             --bg-dark: #1a1a2e;
             --bg-panel: #16213e;
             --accent: #f1c40f;
         }
 
-        /* 響應式基礎設定 */
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif; 
             background-color: var(--bg-dark); 
             color: white; 
             margin: 0; 
@@ -27,7 +26,6 @@
             align-items: center; 
             min-height: 100vh;
             box-sizing: border-box;
-            overflow-x: hidden;
         }
 
         .container { 
@@ -36,59 +34,72 @@
             border-radius: 25px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             box-sizing: border-box;
-            animation: fadeIn 0.5s ease-out;
         }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        h1 { margin-top: 0; color: var(--primary); font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; }
 
         .wallet-info { 
             display: flex; 
             justify-content: space-around; 
-            background: rgba(15, 52, 96, 0.6); 
-            padding: 15px; 
+            background: rgba(15, 52, 96, 0.7); 
+            padding: 12px; 
             border-radius: 15px; 
             margin-bottom: 20px; 
             border: 1px solid rgba(233, 69, 96, 0.3);
         }
 
-        .stat-box { display: flex; flex-direction: column; }
-        .stat-label { font-size: 0.8rem; color: #aaa; margin-bottom: 5px; }
-        .stat-value { font-weight: bold; font-size: 1.3rem; color: var(--accent); }
+        .stat-box { display: flex; flex-direction: column; text-align: center; }
+        .stat-label { font-size: 0.8rem; color: #ccc; margin-bottom: 2px; }
+        .stat-value { font-weight: bold; font-size: 1.2rem; color: var(--accent); }
 
-        /* --- 骰子區 RWD --- */
+        /* --- 核心修正：開獎骰子顯示 --- */
         .dice-container { 
             display: flex; 
             justify-content: center; 
-            gap: 15px; 
+            gap: 12px; 
             margin: 25px 0; 
-            min-height: 80px;
+            min-height: 90px;
         }
 
+        /* 統一所有骰子的點數基礎樣式 */
         .dice {
-            width: 20vw; height: 20vw;
-            max-width: 75px; max-height: 75px;
+            width: 80px; height: 80px; /* 電腦端固定大小 */
             background-color: var(--dice-bg);
-            border-radius: 15px;
+            border-radius: 14px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            padding: 10%;
+            padding: 8px; /* 減少內距，讓點數變大 */
             box-sizing: border-box;
-            box-shadow: inset 0 -4px 8px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.4);
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1), 0 6px 15px rgba(0,0,0,0.4);
             position: relative;
         }
 
-        .dot { width: 85%; height: 85%; background: var(--dice-dot); border-radius: 50%; justify-self: center; align-self: center; display: none; }
+        /* 手機端自適應，但設定最小極限 */
+        @media (max-width: 450px) {
+            .dice {
+                width: 26vw; height: 26vw;
+                min-width: 70px; min-height: 70px;
+                padding: 6px;
+            }
+        }
+
+        .dot { 
+            width: 88%; 
+            height: 88%; 
+            background: var(--dice-dot); 
+            border-radius: 50%; 
+            justify-self: center; 
+            align-self: center; 
+            display: none; 
+        }
         
-        /* 點數精確定位 */
+        /* 點數座標 */
         .d1 { grid-area: 1 / 1; } .d2 { grid-area: 1 / 2; } .d3 { grid-area: 1 / 3; }
         .d4 { grid-area: 2 / 1; } .d5 { grid-area: 2 / 2; } .d6 { grid-area: 2 / 3; }
         .d7 { grid-area: 3 / 1; } .d8 { grid-area: 3 / 2; } .d9 { grid-area: 3 / 3; }
 
+        /* 點數顯示邏輯 */
         .dice[data-val="1"] .d5 { display: block; background: var(--dice-red); width: 100%; height: 100%; }
         .dice[data-val="2"] .d1, .dice[data-val="2"] .d9 { display: block; }
         .dice[data-val="3"] .d1, .dice[data-val="3"] .d5, .dice[data-val="3"] .d9 { display: block; }
@@ -96,67 +107,60 @@
         .dice[data-val="5"] .d1, .dice[data-val="5"] .d3, .dice[data-val="5"] .d5, .dice[data-val="5"] .d7, .dice[data-val="5"] .d9 { display: block; }
         .dice[data-val="6"] .d1, .dice[data-val="6"] .d3, .dice[data-val="6"] .d4, .dice[data-val="6"] .d6, .dice[data-val="6"] .d7, .dice[data-val="6"] .d9 { display: block; }
 
-        .dice.unknown::after { content: "?"; position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #999; font-weight: bold; }
-        .rolling { animation: shake 0.1s infinite linear; background-color: #eee; }
-        @keyframes shake { 0% { transform: rotate(3deg) translateY(-2px); } 50% { transform: rotate(-3deg) translateY(2px); } 100% { transform: rotate(3deg) translateY(-2px); } }
+        .dice.unknown::after { content: "?"; position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #888; font-weight: bold; }
+        .rolling { animation: shake 0.1s infinite; background-color: #eee; }
+        @keyframes shake { 0% { transform: translateY(-3px); } 50% { transform: translateY(3px); } 100% { transform: translateY(-3px); } }
 
-        /* --- 下注區 RWD --- */
+        /* --- 下注區修正 --- */
         .betting-grid { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             gap: 12px; 
-            margin-bottom: 25px; 
+            margin-bottom: 20px; 
         }
 
         @media (max-width: 450px) {
             .betting-grid { grid-template-columns: repeat(2, 1fr); }
-            h1 { font-size: 1.5rem; }
         }
 
         .bet-card { 
             background: rgba(15, 52, 96, 0.8); 
-            padding: 12px; 
+            padding: 10px; 
             border-radius: 18px; 
             border: 2px solid transparent; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             gap: 10px; 
-            transition: 0.2s;
         }
-        .bet-card.active { border-color: var(--primary); background: rgba(233, 69, 96, 0.15); box-shadow: 0 0 15px rgba(233, 69, 96, 0.3); }
-        .bet-card .dice { width: 45px; height: 45px; padding: 5px; border-radius: 8px; }
+        .bet-card.active { border-color: var(--primary); background: rgba(233, 69, 96, 0.2); }
+        
+        /* 下注區的小骰子也要夠清楚 */
+        .bet-card .dice { 
+            width: 55px; height: 55px; 
+            min-width: 55px; min-height: 55px; 
+            padding: 5px; 
+            border-radius: 8px; 
+            box-shadow: none; 
+        }
 
         .controls { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; }
-        .btn-sm { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; font-weight: bold; color: white; background: var(--primary); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.1s; }
-        .btn-sm:active { transform: scale(0.9); }
-        .btn-minus { background: #555; }
-        .bet-val { font-size: 1.1rem; min-width: 45px; font-family: 'Courier New', Courier, monospace; }
+        .btn-sm { width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer; color: white; background: var(--primary); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .bet-val { font-size: 1.2rem; min-width: 40px; font-weight: bold; color: var(--accent); }
 
-        /* --- 訊息與按鈕 --- */
-        .msg { height: 40px; margin-bottom: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .msg { height: 40px; margin-bottom: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
         
         #play-btn { 
-            width: 100%; 
-            padding: 18px; 
-            font-size: 1.4rem; 
-            border: none; 
-            border-radius: 50px; 
-            background: linear-gradient(45deg, #e94560, #950740); 
-            color: white; 
-            cursor: pointer; 
-            font-weight: bold; 
-            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.4);
-            transition: 0.3s;
+            width: 100%; padding: 16px; font-size: 1.4rem; border: none; border-radius: 50px; 
+            background: linear-gradient(45deg, #e94560, #950740); color: white; cursor: pointer; font-weight: bold; 
         }
-        #play-btn:disabled { background: #444; color: #888; box-shadow: none; cursor: not-allowed; }
-        #play-btn:active:not(:disabled) { transform: translateY(2px); }
+        #play-btn:disabled { background: #444; color: #888; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🎲 Lucky Dice</h1>
+    <h2 style="margin-top:0; color:var(--primary); text-align:center;">🎲 LUCKY DICE</h2>
     
     <div class="wallet-info">
         <div class="stat-box">
@@ -177,12 +181,12 @@
 
     <div class="betting-grid" id="betting-grid"></div>
 
-    <div id="msg" class="msg">請調整骰子下方的注額</div>
+    <div id="msg" class="msg">請下注</div>
     <button id="play-btn" onclick="startGame()">開  獎</button>
 </div>
 
 <script>
-    // --- 音效合成器 ---
+    // --- 音效器 ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(type) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -190,39 +194,38 @@
         const gain = audioCtx.createGain();
         osc.connect(gain); gain.connect(audioCtx.destination);
         const now = audioCtx.currentTime;
-
         if (type === 'roll') {
             osc.type = 'square'; osc.frequency.setValueAtTime(120, now); gain.gain.setValueAtTime(0.05, now);
-            osc.start(); osc.stop(now + 0.08);
+            osc.start(); osc.stop(now + 0.05);
         } else if (type === 'win') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(1000, now + 0.3);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(500, now); osc.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
             gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
             osc.start(); osc.stop(now + 0.3);
         } else if (type === 'lose') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); osc.frequency.linearRampToValueAtTime(40, now + 0.4);
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); osc.frequency.linearRampToValueAtTime(50, now + 0.4);
             gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.4);
             osc.start(); osc.stop(now + 0.4);
         }
     }
 
-    // --- 遊戲邏輯 ---
     let balance = 1000;
     let currentBets = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 
     function getDiceDots() {
-        return Array.from({length: 9}, (_, i) => `<div class="dot d${i+1}"></div>`).join('');
+        return `<div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+                <div class="dot d4"></div><div class="dot d5"></div><div class="dot d6"></div>
+                <div class="dot d7"></div><div class="dot d8"></div><div class="dot d9"></div>`;
     }
 
-    // 初始化介面
     const grid = document.getElementById('betting-grid');
     for(let i=1; i<=6; i++) {
         grid.innerHTML += `
             <div class="bet-card" id="card-${i}">
                 <div class="dice" data-val="${i}">${getDiceDots()}</div>
                 <div class="controls">
-                    <button class="btn-sm btn-minus" onclick="changeBet(${i}, -100)">-</button>
+                    <button class="btn-sm" onclick="changeBet(${i}, -100)" style="background:#555">-</button>
                     <span class="bet-val" id="val-${i}">0</span>
-                    <button class="btn-sm btn-plus" onclick="changeBet(${i}, 100)">+</button>
+                    <button class="btn-sm" onclick="changeBet(${i}, 100)">+</button>
                 </div>
             </div>
         `;
@@ -232,7 +235,7 @@
         const next = currentBets[num] + amount;
         if(next < 0) return;
         const totalOther = Object.values(currentBets).reduce((a,b)=>a+b) - currentBets[num];
-        if(totalOther + next > balance) return; // 餘額不足直接無視
+        if(totalOther + next > balance) return;
 
         currentBets[num] = next;
         document.getElementById(`val-${num}`).innerText = next;
@@ -248,19 +251,16 @@
         updateUI();
         document.getElementById('play-btn').disabled = true;
         const msg = document.getElementById('msg');
-        msg.innerText = "擲骰中...";
+        msg.innerText = "開獎中...";
         msg.style.color = "white";
 
         const dEls = [document.getElementById('d1'), document.getElementById('d2'), document.getElementById('d3')];
-        const rollSfx = setInterval(() => playSound('roll'), 100);
+        const rollInterval = setInterval(() => playSound('roll'), 100);
 
-        dEls.forEach(d => { 
-            d.innerHTML = ""; 
-            d.className = "dice unknown rolling"; 
-        });
+        dEls.forEach(d => { d.innerHTML = ""; d.className = "dice unknown rolling"; });
 
         setTimeout(() => {
-            clearInterval(rollSfx);
+            clearInterval(rollInterval);
             const res = [rand(), rand(), rand()];
             let win = 0;
 
@@ -278,13 +278,13 @@
             balance += win;
             if(win > 0) {
                 playSound('win');
-                msg.innerHTML = `恭喜！贏得 <span style="color:#2ecc71">$${win}</span>`;
+                msg.innerHTML = `恭喜贏得 $${win}！`;
+                msg.style.color = "#2ecc71";
             } else {
                 playSound('lose');
-                msg.innerText = "沒中獎，下次一定！";
+                msg.innerText = "可惜沒中獎！";
                 msg.style.color = "#e94560";
             }
-
             resetBets();
             updateUI();
             document.getElementById('play-btn').disabled = false;
