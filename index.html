@@ -8,12 +8,11 @@
         :root {
             --dice-bg: #ffffff;
             --dice-dot: #222;
-            --dice-red: #d63031;
+            --dice-red: #d63031; /* 紅色點數顏色 */
             --primary: #e94560;
             --bg-dark: #1a1a2e;
             --bg-panel: #16213e;
             --accent: #f1c40f;
-            --success: #2ecc71;
         }
 
         html, body {
@@ -97,10 +96,21 @@
         .d4 { grid-area: 2 / 1; } .d5 { grid-area: 2 / 2; } .d6 { grid-area: 2 / 3; }
         .d7 { grid-area: 3 / 1; } .d8 { grid-area: 3 / 2; } .d9 { grid-area: 3 / 3; }
 
+        /* --- 點數顯示與顏色邏輯 --- */
+        /* 1點：紅色，置中加大 */
         .dice[data-val="1"] .d5 { display: block; background: var(--dice-red); width: 100%; height: 100%; }
+        
+        /* 2點與3點：保持黑色 */
         .dice[data-val="2"] .d1, .dice[data-val="2"] .d9 { display: block; }
         .dice[data-val="3"] .d1, .dice[data-val="3"] .d5, .dice[data-val="3"] .d9 { display: block; }
-        .dice[data-val="4"] .d1, .dice[data-val="4"] .d3, .dice[data-val="4"] .d7, .dice[data-val="4"] .d9 { display: block; }
+        
+        /* 4點：修正為紅色 */
+        .dice[data-val="4"] .d1, .dice[data-val="4"] .d3, .dice[data-val="4"] .d7, .dice[data-val="4"] .d9 { 
+            display: block; 
+            background: var(--dice-red); 
+        }
+        
+        /* 5點與6點：保持黑色 */
         .dice[data-val="5"] .d1, .dice[data-val="5"] .d3, .dice[data-val="5"] .d5, .dice[data-val="5"] .d7, .dice[data-val="5"] .d9 { display: block; }
         .dice[data-val="6"] .d1, .dice[data-val="6"] .d3, .dice[data-val="6"] .d4, .dice[data-val="6"] .d6, .dice[data-val="6"] .d7, .dice[data-val="6"] .d9 { display: block; }
 
@@ -187,7 +197,6 @@
         }
     }
 
-    // --- 資料保存邏輯 ---
     let balance = parseInt(localStorage.getItem('dice_balance')) || 1000;
     let currentBets = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 
@@ -235,8 +244,6 @@
 
     function handleMainAction() {
         const total = Object.values(currentBets).reduce((a,b)=>a+b);
-        
-        // 如果沒錢了，執行領取
         if (balance === 0 && total === 0) {
             balance = 1000;
             saveGame();
@@ -245,7 +252,6 @@
             document.getElementById('msg').style.color = "#2ecc71";
             return;
         }
-
         if(total === 0) return;
         startGame(total);
     }
@@ -298,7 +304,6 @@
     function checkStatus() {
         const btn = document.getElementById('play-btn');
         const total = Object.values(currentBets).reduce((a,b)=>a+b);
-        
         if (balance === 0 && total === 0) {
             btn.innerText = "領取開運金 $1000";
             btn.classList.add('reload-mode');
@@ -321,7 +326,6 @@
         document.getElementById('total-bet').innerText = "$0";
     }
 
-    // 初始化執行
     updateUI();
     checkStatus();
 </script>
