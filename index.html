@@ -2,8 +2,8 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lucky Dice 🎲 手機優化版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Lucky Dice 🎲 巨大暴擊版</title>
     <style>
         :root {
             --dice-bg: #ffffff;
@@ -15,132 +15,95 @@
             --accent: #f1c40f;
         }
 
-        /* 等級色彩系統 */
         body.lv-1 { --bg-dark: #1a1a2e; --bg-panel: #16213e; }
-        body.lv-2 { --bg-dark: #16213e; --bg-panel: #0f3460; }
-        body.lv-3 { --bg-dark: #1b1464; --bg-panel: #0652dd; }
-        body.lv-4 { --bg-dark: #4834d4; --bg-panel: #686de0; }
-        body.lv-5 { --bg-dark: #130f40; --bg-panel: #30336b; --dice-bg: #f5f6fa; }
-        body.lv-6 { --bg-dark: #3c0912; --bg-panel: #5d111c; --dice-bg: #fab1a0; }
-        body.lv-7 { --bg-dark: #581845; --bg-panel: #900c3f; --dice-bg: #dfe6e9; }
-        body.lv-8 { --bg-dark: #1e272e; --bg-panel: #485460; --dice-bg: #d2dae2; }
-        body.lv-9 { --bg-dark: #2c3e50; --bg-panel: #34495e; --dice-bg: #ffeaa7; }
-        body.lv-10 { --bg-dark: #000000; --bg-panel: #1e272e; --dice-bg: #f1c40f; --dice-dot: #000; }
+        body.lv-10 { --bg-dark: #000; --bg-panel: #222; --dice-bg: #f1c40f; --dice-dot: #000; }
 
-        * { box-sizing: border-box; } /* 重要：防止寬度撐爆 */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: sans-serif; overflow-x: hidden; }
+        body { display: flex; justify-content: center; padding: env(safe-area-inset-top) 8px 20px 8px; }
 
-        html, body {
-            touch-action: manipulation;
-            user-select: none;
-            -webkit-user-select: none;
-            overflow-x: hidden;
-            width: 100%; height: 100%; transition: background 0.8s ease;
-            margin: 0; padding: 0;
-        }
-
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg-dark); color: white;
-            display: flex; justify-content: center; align-items: flex-start; /* 手機上靠頂部顯示 */
-            padding: 10px; min-height: 100vh;
-        }
-
-        .container { 
-            background: var(--bg-panel); padding: 15px; border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5); width: 100%; max-width: 400px; 
-            transition: background 0.8s ease, transform 0.1s;
-            margin-top: 10px;
-        }
-
-        @keyframes screen-shake {
-            0% { transform: translate(1px, 1px); }
-            20% { transform: translate(-3px, 0px); }
-            40% { transform: translate(3px, 2px); }
-            60% { transform: translate(-3px, 1px); }
-            80% { transform: translate(3px, 1px); }
-            100% { transform: translate(1px, -2px); }
-        }
-        .jackpot-shake { animation: screen-shake 0.1s infinite; }
-
-        .lv-badge { text-align: center; font-size: 0.85rem; font-weight: bold; color: var(--accent); margin-bottom: 10px; }
-
-        .wallet-info { 
-            display: flex; justify-content: space-around; background: rgba(0, 0, 0, 0.3); 
-            padding: 10px; border-radius: 12px; margin-bottom: 15px; 
-        }
-
+        .container { width: 100%; max-width: 450px; background: var(--bg-panel); border-radius: 25px; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 5px; }
+        .lv-badge { text-align: center; color: var(--accent); font-weight: bold; margin-bottom: 8px; font-size: 0.9rem; }
+        
+        .wallet-info { display: flex; justify-content: space-around; background: rgba(0,0,0,0.4); border-radius: 15px; padding: 10px; margin-bottom: 12px; }
         .stat-box { text-align: center; }
-        .stat-label { font-size: 0.7rem; color: #bbb; display: block; }
-        .stat-value { font-weight: bold; font-size: 1.1rem; color: var(--accent); }
+        .stat-label { font-size: 0.7rem; color: #aaa; display: block; }
+        .stat-value { font-size: 1.1rem; font-weight: bold; color: var(--accent); }
 
-        .dice-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-
+        /* --- 巨大骰子 --- */
+        .dice-container { display: flex; justify-content: center; gap: 10px; margin: 15px 0 25px 0; }
         .dice {
-            width: 28vw; height: 28vw; max-width: 85px; max-height: 85px; 
-            background-color: var(--dice-bg); border-radius: 12px;
-            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
-            padding: 10%; position: relative; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.3);
+            width: clamp(90px, 28vw, 110px); 
+            aspect-ratio: 1 / 1;
+            background-color: var(--dice-bg);
+            border-radius: 15%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            padding: 6%;
+            position: relative;
+            box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.4);
         }
 
-        .dot { width: 90%; height: 90%; background: var(--dice-dot); border-radius: 50%; justify-self: center; align-self: center; display: none; }
-        .d1 { grid-area: 1/1; } .d2 { grid-area: 1/2; } .d3 { grid-area: 1/3; }
-        .d4 { grid-area: 2/1; } .d5 { grid-area: 2/2; } .d6 { grid-area: 2/3; }
-        .d7 { grid-area: 3/1; } .d8 { grid-area: 3/2; } .d9 { grid-area: 3/3; }
+        .dot { 
+            width: 90%; height: 90%; 
+            background: var(--dice-dot); 
+            border-radius: 50%; 
+            justify-self: center; align-self: center; 
+            display: none; 
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
+        }
 
-        .dice[data-val="1"] .d5 { display: block; background: var(--dice-red); width: 110%; height: 110%; }
+        /* 座標 */
+        .d-tl { grid-area: 1 / 1; } .d-tm { grid-area: 1 / 2; } .d-tr { grid-area: 1 / 3; }
+        .d-ml { grid-area: 2 / 1; } .d-mm { grid-area: 2 / 2; } .d-mr { grid-area: 2 / 3; }
+        .d-bl { grid-area: 3 / 1; } .d-bm { grid-area: 3 / 2; } .d-br { grid-area: 3 / 3; }
+
+        /* 點數邏輯 */
+        .dice[data-val="1"] .d-mm { display: block; background: var(--dice-red); transform: scale(1.3); }
+        .dice[data-val="2"] .d-tl, .dice[data-val="2"] .d-br { display: block; }
+        .dice[data-val="3"] .d-tl, .dice[data-val="3"] .d-mm, .dice[data-val="3"] .d-br { display: block; }
         .dice[data-val="4"] .dot { background: var(--dice-red); }
-        .dice[data-val="2"] .d1, .dice[data-val="2"] .d9 { display: block; }
-        .dice[data-val="3"] .d1, .dice[data-val="3"] .d5, .dice[data-val="3"] .d9 { display: block; }
-        .dice[data-val="4"] .d1, .dice[data-val="4"] .d3, .dice[data-val="4"] .d7, .dice[data-val="4"] .d9 { display: block; }
-        .dice[data-val="5"] .d1, .dice[data-val="5"] .d3, .dice[data-val="5"] .d5, .dice[data-val="5"] .d7, .dice[data-val="5"] .d9 { display: block; }
-        .dice[data-val="6"] .d1, .dice[data-val="6"] .d3, .dice[data-val="6"] .d4, .dice[data-val="6"] .d6, .dice[data-val="6"] .d7, .dice[data-val="6"] .d9 { display: block; }
+        .dice[data-val="4"] .d-tl, .dice[data-val="4"] .d-tr, .dice[data-val="4"] .d-bl, .dice[data-val="4"] .d-br { display: block; }
+        .dice[data-val="5"] .d-tl, .dice[data-val="5"] .d-tr, .dice[data-val="5"] .d-mm, .dice[data-val="5"] .d-bl, .dice[data-val="5"] .d-br { display: block; }
+        .dice[data-val="6"] .d-tl, .dice[data-val="6"] .d-ml, .dice[data-val="6"] .d-bl, .dice[data-val="6"] .d-tr, .dice[data-val="6"] .d-mr, .dice[data-val="6"] .d-br { display: block; }
 
-        .dice.unknown::after { content: "?"; position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #888; }
-        .rolling { animation: shake 0.1s infinite; background-color: #eee; }
-        @keyframes shake { 0% { transform: translateY(-2px); } 50% { transform: translateY(2px); } 100% { transform: translateY(-2px); } }
+        .dice.unknown::after { content: "?"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #ddd; font-weight: bold; }
+        .rolling { animation: shake 0.1s infinite; }
+        @keyframes shake { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
 
-        .betting-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); /* 預設 3 列 */
-            gap: 8px; margin-bottom: 15px; 
+        /* 暴擊特效 */
+        .jackpot-active { animation: glow 0.5s infinite alternate; }
+        @keyframes glow { 
+            from { box-shadow: 0 0 5px var(--accent); } 
+            to { box-shadow: 0 0 25px var(--accent), inset 0 0 10px var(--accent); } 
         }
 
-        /* 當手機螢幕太窄時自動變 2 列 */
-        @media (max-width: 360px) {
-            .betting-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        /* 下注區 */
+        .betting-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 20px; }
+        .bet-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 8px; display: flex; flex-direction: column; align-items: center; border: 2px solid transparent; }
+        .bet-card.active { border-color: var(--accent); background: rgba(241,196,15,0.1); }
+        .bet-card .mini-dice { width: 38px; height: 38px; margin-bottom: 5px; border-radius: 10%; padding: 6%; box-shadow: none; }
 
-        .bet-card { background: rgba(15, 52, 96, 0.8); padding: 8px; border-radius: 12px; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; }
-        .bet-card.active { border-color: var(--accent); background: rgba(241, 196, 15, 0.1); }
-        .bet-card .dice { width: 40px; height: 40px; min-width: 40px; min-height: 40px; padding: 4px; box-shadow: none; margin-bottom: 5px; }
+        .controls { display: flex; align-items: center; gap: 4px; }
+        .btn-sm { width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .bet-val { min-width: 30px; text-align: center; font-weight: bold; font-size: 0.9rem; }
 
-        .controls { display: flex; justify-content: center; align-items: center; gap: 4px; width: 100%; }
-        .btn-sm { width: 30px; height: 30px; border-radius: 50%; border: none; color: white; background: var(--primary); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .bet-val { font-size: 0.85rem; font-weight: bold; color: #fff; min-width: 35px; text-align: center; }
-        .bet-unit-hint { font-size: 0.6rem; color: var(--accent); margin-top: 1px; }
+        .msg { height: 50px; text-align: center; font-weight: bold; display: flex; flex-direction: column; justify-content: center; margin-bottom: 10px; }
+        .jackpot-text { color: var(--accent); font-size: 1.2rem; animation: flash 0.3s infinite; }
+        @keyframes flash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
 
-        .msg { height: 45px; margin-bottom: 10px; font-weight: bold; text-align: center; font-size: 1rem; display: flex; flex-direction: column; justify-content: center; }
-        .jackpot-text { color: #f1c40f; font-size: 0.8rem; font-weight: 900; animation: pulse 0.3s infinite; }
-
-        #play-btn { width: 100%; padding: 15px; font-size: 1.2rem; border: none; border-radius: 30px; background: linear-gradient(45deg, #e94560, #950740); color: white; cursor: pointer; font-weight: bold; }
-        #play-btn.reload-mode { background: linear-gradient(45deg, #2ecc71, #27ae60); }
-        #play-btn:disabled { opacity: 0.5; }
+        #play-btn { width: 100%; padding: 18px; border-radius: 50px; border: none; background: linear-gradient(45deg, #e94560, #950740); color: white; font-size: 1.4rem; font-weight: bold; }
+        #play-btn:disabled { opacity: 0.4; }
     </style>
 </head>
 <body class="lv-1">
 
-<div class="container" id="game-container">
-    <div id="lv-display" class="lv-badge">RANK: LV.1 NOVICE</div>
-
+<div class="container">
+    <div id="lv-display" class="lv-badge">LEVEL 1</div>
     <div class="wallet-info">
-        <div class="stat-box">
-            <span class="stat-label">餘額</span>
-            <span id="balance" class="stat-value">$1000</span>
-        </div>
-        <div class="stat-box">
-            <span class="stat-label">總下注</span>
-            <span id="total-bet" class="stat-value">$0</span>
-        </div>
+        <div class="stat-box"><span class="stat-label">餘額</span><span id="balance" class="stat-value">$1000</span></div>
+        <div class="stat-box"><span class="stat-label">本次下注</span><span id="total-bet" class="stat-value">$0</span></div>
     </div>
 
     <div class="dice-container">
@@ -150,9 +113,8 @@
     </div>
 
     <div class="betting-grid" id="betting-grid"></div>
-
     <div id="msg" class="msg">請下注</div>
-    <button id="play-btn" onclick="handleMainAction()">開  獎</button>
+    <button id="play-btn" onclick="handleMainAction()">開 獎</button>
 </div>
 
 <script>
@@ -161,56 +123,54 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const now = audioCtx.currentTime;
         if (type === 'roll') {
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(100, now); gain.gain.setValueAtTime(0.02, now);
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 0.05);
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.type = 'square'; o.frequency.setValueAtTime(100, now); g.gain.setValueAtTime(0.01, now);
+            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(now + 0.05);
         } else if (type === 'win') {
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = 'sine'; osc.frequency.setValueAtTime(500, now); gain.gain.setValueAtTime(0.1, now);
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 0.3);
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.frequency.setValueAtTime(600, now); g.gain.setValueAtTime(0.1, now);
+            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(now + 0.4);
         } else if (type === 'jackpot') {
-            [523, 659, 783, 1046].forEach((freq, i) => {
-                const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-                osc.frequency.setValueAtTime(freq, now + (i * 0.1)); gain.gain.setValueAtTime(0.05, now + (i * 0.1));
-                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + (i * 0.1)); osc.stop(now + (i * 0.1) + 0.3);
+            [440, 554, 659, 880].forEach((f, i) => {
+                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination); o.frequency.setValueAtTime(f, now + i*0.1);
+                g.gain.setValueAtTime(0.08, now + i*0.1); o.start(now + i*0.1); o.stop(now + i*0.1 + 0.4);
             });
         }
     }
 
-    let balance = parseInt(localStorage.getItem('dice_mobile_v1')) || 1000;
+    let balance = parseInt(localStorage.getItem('dice_jackpot_v10')) || 1000;
     let currentBets = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
-    let currentLevel = 1;
-    const RANKS = ["Novice", "Gambler", "Pro", "Expert", "Elite", "Master", "Legend", "Mythic", "Divine", "King"];
+    let lv = 1;
 
-    function saveGame() { localStorage.setItem('dice_mobile_v1', balance); updateUI(); }
-
-    function updateUI() {
-        document.getElementById('balance').innerText = `$${balance}`;
-        currentLevel = Math.min(Math.floor(balance / 5000) + 1, 10);
-        document.getElementById('lv-display').innerText = `RANK: LV.${currentLevel} ${RANKS[currentLevel-1]}`;
-        document.body.className = `lv-${currentLevel}`;
-        document.querySelectorAll('.bet-unit-hint').forEach(h => h.innerText = `±${currentLevel * 100}`);
-    }
+    const diceHtml = `
+        <div class="dot d-tl"></div><div class="dot d-tm"></div><div class="dot d-tr"></div>
+        <div class="dot d-ml"></div><div class="dot d-mm"></div><div class="dot d-mr"></div>
+        <div class="dot d-bl"></div><div class="dot d-bm"></div><div class="dot d-br"></div>
+    `;
 
     const grid = document.getElementById('betting-grid');
     for(let i=1; i<=6; i++) {
         grid.innerHTML += `
             <div class="bet-card" id="card-${i}">
-                <div class="dice" data-val="${i}"><div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div><div class="dot d5"></div><div class="dot d6"></div><div class="dot d7"></div><div class="dot d8"></div><div class="dot d9"></div></div>
+                <div class="dice mini-dice" data-val="${i}">${diceHtml}</div>
                 <div class="controls">
-                    <button class="btn-sm" onclick="changeBet(${i}, -1)">－</button>
-                    <div style="display:flex; flex-direction:column; align-items:center;">
-                        <span class="bet-val" id="val-${i}">0</span>
-                        <span class="bet-unit-hint">±100</span>
-                    </div>
-                    <button class="btn-sm" onclick="changeBet(${i}, 1)">＋</button>
+                    <button class="btn-sm" onclick="changeBet(${i}, -1)">-</button>
+                    <span class="bet-val" id="val-${i}">0</span>
+                    <button class="btn-sm" onclick="changeBet(${i}, 1)">+</button>
                 </div>
             </div>`;
     }
 
+    function updateUI() {
+        document.getElementById('balance').innerText = `$${balance}`;
+        lv = Math.min(Math.floor(balance / 5000) + 1, 10);
+        document.getElementById('lv-display').innerText = `LEVEL ${lv}`;
+    }
+
     function changeBet(num, dir) {
-        const amount = dir * (currentLevel * 100);
-        const next = currentBets[num] + amount;
+        const unit = lv * 100;
+        const next = currentBets[num] + (dir * unit);
         if(next < 0) return;
         const totalOther = Object.values(currentBets).reduce((a,b)=>a+b) - currentBets[num];
         if(totalOther + next > balance) return;
@@ -218,59 +178,56 @@
         document.getElementById(`val-${num}`).innerText = next;
         document.getElementById(`card-${num}`).classList.toggle('active', next > 0);
         document.getElementById('total-bet').innerText = `$${totalOther + next}`;
-        checkStatus();
+        document.getElementById('play-btn').disabled = (totalOther + next === 0);
     }
 
     function handleMainAction() {
         const total = Object.values(currentBets).reduce((a,b)=>a+b);
-        if (balance === 0 && total === 0) { balance = 1000; saveGame(); checkStatus(); return; }
         if(total === 0) return;
-        startGame(total);
-    }
-
-    function startGame(totalBet) {
-        balance -= totalBet; saveGame();
+        balance -= total; updateUI();
         document.getElementById('play-btn').disabled = true;
-        const msgEl = document.getElementById('msg');
-        msgEl.innerHTML = "開獎中...";
+        const msg = document.getElementById('msg');
+        msg.innerText = "開獎中..."; msg.style.color = "white";
+
         const dEls = [document.getElementById('d1'), document.getElementById('d2'), document.getElementById('d3')];
-        const rollInterval = setInterval(() => playSound('roll'), 100);
-        dEls.forEach(d => { d.innerHTML = ""; d.className = "dice unknown rolling"; });
+        dEls.forEach(d => { d.innerHTML = ""; d.className = "dice unknown rolling"; d.classList.remove('jackpot-active'); });
+
+        const rollInt = setInterval(() => playSound('roll'), 100);
 
         setTimeout(() => {
-            clearInterval(rollInterval);
+            clearInterval(rollInt);
             const res = [Math.floor(Math.random()*6)+1, Math.floor(Math.random()*6)+1, Math.floor(Math.random()*6)+1];
-            let win = 0; let isJackpot = Math.random() < 0.8;
+            let win = 0;
+            // 暴擊率設定：1%
+            let isJackpot = Math.random() < 0.25;
+
             dEls.forEach((el, i) => {
-                el.className = "dice"; el.setAttribute('data-val', res[i]);
-                el.innerHTML = '<div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div><div class="dot d5"></div><div class="dot d6"></div><div class="dot d7"></div><div class="dot d8"></div><div class="dot d9"></div>';
+                el.className = "dice";
+                el.setAttribute('data-val', res[i]);
+                el.innerHTML = diceHtml;
+                if(isJackpot) el.classList.add('jackpot-active');
             });
+
             for(let n in currentBets) {
-                const matches = res.filter(x => x == n).length;
-                if(matches > 0) win += currentBets[n] + (currentBets[n] * matches);
+                const count = res.filter(x => x == n).length;
+                if(count > 0) win += currentBets[n] + (currentBets[n] * count);
             }
-            if (isJackpot && win > 0) {
-                win *= 10; playSound('jackpot');
-                document.getElementById('game-container').classList.add('jackpot-shake');
-                msgEl.innerHTML = `<div class="jackpot-text">✨ 10 倍暴擊！ ✨</div><div style="color:#f1c40f;">贏得 $${win}</div>`;
-                setTimeout(() => document.getElementById('game-container').classList.remove('jackpot-shake'), 1000);
-            } else if (win > 0) {
-                playSound('win'); msgEl.innerHTML = `贏得 $${win}`; msgEl.style.color = "#2ecc71";
+
+            if(isJackpot && win > 0) {
+                win *= 10;
+                playSound('jackpot');
+                msg.innerHTML = `<div class="jackpot-text">✨ 10倍幸運暴擊！ ✨</div><div>贏得 $${win}</div>`;
+            } else if(win > 0) {
+                playSound('win');
+                msg.innerText = `贏得 $${win}`; msg.style.color = "#2ecc71";
             } else {
-                msgEl.innerText = "可惜未中獎"; msgEl.style.color = "#e94560";
+                msg.innerText = "未中獎"; msg.style.color = "#e94560";
             }
-            balance += win; resetBets(); saveGame(); checkStatus();
+            balance += win; reset(); save();
         }, 1200);
     }
 
-    function checkStatus() {
-        const btn = document.getElementById('play-btn');
-        const total = Object.values(currentBets).reduce((a,b)=>a+b);
-        if (balance === 0 && total === 0) { btn.innerText = "領取 $1000"; btn.classList.add('reload-mode'); }
-        else { btn.innerText = "開  獎"; btn.classList.remove('reload-mode'); btn.disabled = (total === 0); }
-    }
-
-    function resetBets() {
+    function reset() {
         currentBets = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
         for(let i=1; i<=6; i++) {
             document.getElementById(`val-${i}`).innerText = 0;
@@ -279,7 +236,8 @@
         document.getElementById('total-bet').innerText = "$0";
     }
 
-    updateUI(); checkStatus();
+    function save() { localStorage.setItem('dice_jackpot_v10', balance); updateUI(); }
+    updateUI();
 </script>
 </body>
 </html>
