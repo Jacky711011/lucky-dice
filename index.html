@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lucky Dice 🎲 暴擊音效版</title>
+    <title>Lucky Dice 🎲 手機優化版</title>
     <style>
         :root {
             --dice-bg: #ffffff;
@@ -27,64 +27,67 @@
         body.lv-9 { --bg-dark: #2c3e50; --bg-panel: #34495e; --dice-bg: #ffeaa7; }
         body.lv-10 { --bg-dark: #000000; --bg-panel: #1e272e; --dice-bg: #f1c40f; --dice-dot: #000; }
 
+        * { box-sizing: border-box; } /* 重要：防止寬度撐爆 */
+
         html, body {
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            overflow: hidden; /* 防止暴擊震動時出現滾動條 */
+            overflow-x: hidden;
             width: 100%; height: 100%; transition: background 0.8s ease;
+            margin: 0; padding: 0;
         }
 
         body { 
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif; 
-            background-color: var(--bg-dark); color: white; margin: 0; padding: 10px; 
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg-dark); color: white;
+            display: flex; justify-content: center; align-items: flex-start; /* 手機上靠頂部顯示 */
+            padding: 10px; min-height: 100vh;
         }
 
         .container { 
-            background: var(--bg-panel); padding: 20px; border-radius: 25px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); width: 100%; max-width: 480px; 
+            background: var(--bg-panel); padding: 15px; border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); width: 100%; max-width: 400px; 
             transition: background 0.8s ease, transform 0.1s;
+            margin-top: 10px;
         }
 
-        /* 暴擊螢幕震動動畫 */
         @keyframes screen-shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            40% { transform: translate(3px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            80% { transform: translate(3px, 1px) rotate(1deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            0% { transform: translate(1px, 1px); }
+            20% { transform: translate(-3px, 0px); }
+            40% { transform: translate(3px, 2px); }
+            60% { transform: translate(-3px, 1px); }
+            80% { transform: translate(3px, 1px); }
+            100% { transform: translate(1px, -2px); }
         }
-        .jackpot-shake { animation: screen-shake 0.15s infinite; }
+        .jackpot-shake { animation: screen-shake 0.1s infinite; }
 
-        .lv-badge { text-align: center; font-size: 0.9rem; font-weight: bold; color: var(--accent); margin-bottom: 5px; }
+        .lv-badge { text-align: center; font-size: 0.85rem; font-weight: bold; color: var(--accent); margin-bottom: 10px; }
 
         .wallet-info { 
             display: flex; justify-content: space-around; background: rgba(0, 0, 0, 0.3); 
-            padding: 10px; border-radius: 15px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px; border-radius: 12px; margin-bottom: 15px; 
         }
 
-        .stat-box { display: flex; flex-direction: column; text-align: center; }
-        .stat-label { font-size: 0.75rem; color: #bbb; }
+        .stat-box { text-align: center; }
+        .stat-label { font-size: 0.7rem; color: #bbb; display: block; }
         .stat-value { font-weight: bold; font-size: 1.1rem; color: var(--accent); }
 
-        .dice-container { display: flex; justify-content: center; gap: 12px; margin-bottom: 25px; }
+        .dice-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
 
         .dice {
-            width: 80px; height: 80px; background-color: var(--dice-bg); border-radius: 14px;
+            width: 28vw; height: 28vw; max-width: 85px; max-height: 85px; 
+            background-color: var(--dice-bg); border-radius: 12px;
             display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
-            padding: 8px; box-sizing: border-box; transition: background 0.5s ease;
-            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1), 0 6px 15px rgba(0,0,0,0.4); position: relative;
+            padding: 10%; position: relative; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .dot { width: 88%; height: 88%; background: var(--dice-dot); border-radius: 50%; justify-self: center; align-self: center; display: none; }
-        .d1 { grid-area: 1 / 1; } .d2 { grid-area: 1 / 2; } .d3 { grid-area: 1 / 3; }
-        .d4 { grid-area: 2 / 1; } .d5 { grid-area: 2 / 2; } .d6 { grid-area: 2 / 3; }
-        .d7 { grid-area: 3 / 1; } .d8 { grid-area: 3 / 2; } .d9 { grid-area: 3 / 3; }
+        .dot { width: 90%; height: 90%; background: var(--dice-dot); border-radius: 50%; justify-self: center; align-self: center; display: none; }
+        .d1 { grid-area: 1/1; } .d2 { grid-area: 1/2; } .d3 { grid-area: 1/3; }
+        .d4 { grid-area: 2/1; } .d5 { grid-area: 2/2; } .d6 { grid-area: 2/3; }
+        .d7 { grid-area: 3/1; } .d8 { grid-area: 3/2; } .d9 { grid-area: 3/3; }
 
-        .dice[data-val="1"] .d5 { display: block; background: var(--dice-red); }
+        .dice[data-val="1"] .d5 { display: block; background: var(--dice-red); width: 110%; height: 110%; }
         .dice[data-val="4"] .dot { background: var(--dice-red); }
         .dice[data-val="2"] .d1, .dice[data-val="2"] .d9 { display: block; }
         .dice[data-val="3"] .d1, .dice[data-val="3"] .d5, .dice[data-val="3"] .d9 { display: block; }
@@ -92,27 +95,36 @@
         .dice[data-val="5"] .d1, .dice[data-val="5"] .d3, .dice[data-val="5"] .d5, .dice[data-val="5"] .d7, .dice[data-val="5"] .d9 { display: block; }
         .dice[data-val="6"] .d1, .dice[data-val="6"] .d3, .dice[data-val="6"] .d4, .dice[data-val="6"] .d6, .dice[data-val="6"] .d7, .dice[data-val="6"] .d9 { display: block; }
 
-        .dice.unknown::after { content: "?"; position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #888; font-weight: bold; }
+        .dice.unknown::after { content: "?"; position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #888; }
         .rolling { animation: shake 0.1s infinite; background-color: #eee; }
-        @keyframes shake { 0% { transform: translateY(-3px); } 50% { transform: translateY(3px); } 100% { transform: translateY(-3px); } }
+        @keyframes shake { 0% { transform: translateY(-2px); } 50% { transform: translateY(2px); } 100% { transform: translateY(-2px); } }
 
-        .betting-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .bet-card { background: rgba(15, 52, 96, 0.8); padding: 8px; border-radius: 15px; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .betting-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* 預設 3 列 */
+            gap: 8px; margin-bottom: 15px; 
+        }
+
+        /* 當手機螢幕太窄時自動變 2 列 */
+        @media (max-width: 360px) {
+            .betting-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .bet-card { background: rgba(15, 52, 96, 0.8); padding: 8px; border-radius: 12px; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; }
         .bet-card.active { border-color: var(--accent); background: rgba(241, 196, 15, 0.1); }
-        .bet-card .dice { width: 45px; height: 45px; min-width: 45px; min-height: 45px; padding: 4px; border-radius: 8px; box-shadow: none; }
+        .bet-card .dice { width: 40px; height: 40px; min-width: 40px; min-height: 40px; padding: 4px; box-shadow: none; margin-bottom: 5px; }
 
-        .controls { display: flex; justify-content: center; align-items: center; gap: 5px; width: 100%; }
-        .btn-sm { width: 32px; height: 32px; border-radius: 50%; border: none; color: white; background: var(--primary); font-size: 1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .bet-val { font-size: 0.9rem; min-width: 45px; font-weight: bold; color: #fff; text-align: center; }
-        .bet-unit-hint { font-size: 0.6rem; color: var(--accent); margin-top: 2px; }
+        .controls { display: flex; justify-content: center; align-items: center; gap: 4px; width: 100%; }
+        .btn-sm { width: 30px; height: 30px; border-radius: 50%; border: none; color: white; background: var(--primary); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .bet-val { font-size: 0.85rem; font-weight: bold; color: #fff; min-width: 35px; text-align: center; }
+        .bet-unit-hint { font-size: 0.6rem; color: var(--accent); margin-top: 1px; }
 
-        .msg { height: 50px; margin-bottom: 10px; font-weight: bold; text-align: center; font-size: 1.1rem; display: flex; flex-direction: column; justify-content: center; }
-        .jackpot-text { color: #f1c40f; font-size: 0.9rem; font-weight: 900; text-shadow: 0 0 10px #f1c40f; animation: pulse 0.3s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
+        .msg { height: 45px; margin-bottom: 10px; font-weight: bold; text-align: center; font-size: 1rem; display: flex; flex-direction: column; justify-content: center; }
+        .jackpot-text { color: #f1c40f; font-size: 0.8rem; font-weight: 900; animation: pulse 0.3s infinite; }
 
-        #play-btn { width: 100%; padding: 18px; font-size: 1.4rem; border: none; border-radius: 50px; background: linear-gradient(45deg, #e94560, #950740); color: white; cursor: pointer; font-weight: bold; }
+        #play-btn { width: 100%; padding: 15px; font-size: 1.2rem; border: none; border-radius: 30px; background: linear-gradient(45deg, #e94560, #950740); color: white; cursor: pointer; font-weight: bold; }
         #play-btn.reload-mode { background: linear-gradient(45deg, #2ecc71, #27ae60); }
-        #play-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        #play-btn:disabled { opacity: 0.5; }
     </style>
 </head>
 <body class="lv-1">
@@ -145,50 +157,32 @@
 
 <script>
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
     function playSound(type) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const now = audioCtx.currentTime;
-        
         if (type === 'roll') {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(100, now);
-            gain.gain.setValueAtTime(0.02, now);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(now + 0.05);
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(100, now); gain.gain.setValueAtTime(0.02, now);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 0.05);
         } else if (type === 'win') {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine'; osc.frequency.setValueAtTime(500, now);
-            osc.frequency.exponentialRampToValueAtTime(1000, now + 0.2);
-            gain.gain.setValueAtTime(0.1, now);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(now + 0.3);
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(500, now); gain.gain.setValueAtTime(0.1, now);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 0.3);
         } else if (type === 'jackpot') {
-            // 暴擊音樂：一組快速上升的琶音
-            [523, 659, 783, 1046, 1318, 1567].forEach((freq, i) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, now + (i * 0.1));
-                gain.gain.setValueAtTime(0.1, now + (i * 0.1));
-                gain.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.1) + 0.3);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(now + (i * 0.1)); osc.stop(now + (i * 0.1) + 0.4);
+            [523, 659, 783, 1046].forEach((freq, i) => {
+                const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                osc.frequency.setValueAtTime(freq, now + (i * 0.1)); gain.gain.setValueAtTime(0.05, now + (i * 0.1));
+                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + (i * 0.1)); osc.stop(now + (i * 0.1) + 0.3);
             });
         }
     }
 
-    let balance = parseInt(localStorage.getItem('dice_balance_v4')) || 1000;
+    let balance = parseInt(localStorage.getItem('dice_mobile_v1')) || 1000;
     let currentBets = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
     let currentLevel = 1;
-    const RANKS = ["Novice", "Gambler", "Pro", "Expert", "Elite", "Master", "Legend", "Mythic", "Divine", "Casino King"];
+    const RANKS = ["Novice", "Gambler", "Pro", "Expert", "Elite", "Master", "Legend", "Mythic", "Divine", "King"];
 
-    function saveGame() {
-        localStorage.setItem('dice_balance_v4', balance);
-        updateUI();
-    }
+    function saveGame() { localStorage.setItem('dice_mobile_v1', balance); updateUI(); }
 
     function updateUI() {
         document.getElementById('balance').innerText = `$${balance}`;
@@ -211,13 +205,12 @@
                     </div>
                     <button class="btn-sm" onclick="changeBet(${i}, 1)">＋</button>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 
-    function changeBet(num, direction) {
-        const unit = currentLevel * 100;
-        const next = currentBets[num] + (direction * unit);
+    function changeBet(num, dir) {
+        const amount = dir * (currentLevel * 100);
+        const next = currentBets[num] + amount;
         if(next < 0) return;
         const totalOther = Object.values(currentBets).reduce((a,b)=>a+b) - currentBets[num];
         if(totalOther + next > balance) return;
@@ -230,10 +223,7 @@
 
     function handleMainAction() {
         const total = Object.values(currentBets).reduce((a,b)=>a+b);
-        if (balance === 0 && total === 0) {
-            balance = 1000; saveGame(); checkStatus();
-            document.getElementById('msg').innerText = "領取成功！"; return;
-        }
+        if (balance === 0 && total === 0) { balance = 1000; saveGame(); checkStatus(); return; }
         if(total === 0) return;
         startGame(total);
     }
@@ -242,8 +232,7 @@
         balance -= totalBet; saveGame();
         document.getElementById('play-btn').disabled = true;
         const msgEl = document.getElementById('msg');
-        msgEl.innerHTML = "開獎中..."; msgEl.style.color = "white";
-
+        msgEl.innerHTML = "開獎中...";
         const dEls = [document.getElementById('d1'), document.getElementById('d2'), document.getElementById('d3')];
         const rollInterval = setInterval(() => playSound('roll'), 100);
         dEls.forEach(d => { d.innerHTML = ""; d.className = "dice unknown rolling"; });
@@ -251,46 +240,34 @@
         setTimeout(() => {
             clearInterval(rollInterval);
             const res = [Math.floor(Math.random()*6)+1, Math.floor(Math.random()*6)+1, Math.floor(Math.random()*6)+1];
-            let win = 0;
-            let isJackpot = Math.random() < 0.8;
-
+            let win = 0; let isJackpot = Math.random() < 0.8;
             dEls.forEach((el, i) => {
                 el.className = "dice"; el.setAttribute('data-val', res[i]);
                 el.innerHTML = '<div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div><div class="dot d5"></div><div class="dot d6"></div><div class="dot d7"></div><div class="dot d8"></div><div class="dot d9"></div>';
             });
-
             for(let n in currentBets) {
                 const matches = res.filter(x => x == n).length;
                 if(matches > 0) win += currentBets[n] + (currentBets[n] * matches);
             }
-
             if (isJackpot && win > 0) {
-                win *= 10;
-                playSound('jackpot'); // 播放特別音樂
-                document.getElementById('game-container').classList.add('jackpot-shake'); // 加入震動
-                msgEl.innerHTML = `<div class="jackpot-text">✨ 10 倍幸運暴擊！ ✨</div><div style="font-size:1.3rem; color:#f1c40f;">贏得 $${win}！</div>`;
+                win *= 10; playSound('jackpot');
+                document.getElementById('game-container').classList.add('jackpot-shake');
+                msgEl.innerHTML = `<div class="jackpot-text">✨ 10 倍暴擊！ ✨</div><div style="color:#f1c40f;">贏得 $${win}</div>`;
                 setTimeout(() => document.getElementById('game-container').classList.remove('jackpot-shake'), 1000);
             } else if (win > 0) {
-                playSound('win');
-                msgEl.innerHTML = `恭喜贏得 $${win}！`; msgEl.style.color = "#2ecc71";
+                playSound('win'); msgEl.innerHTML = `贏得 $${win}`; msgEl.style.color = "#2ecc71";
             } else {
                 msgEl.innerText = "可惜未中獎"; msgEl.style.color = "#e94560";
             }
-
-            balance += win;
-            resetBets(); saveGame(); checkStatus();
-        }, 1500);
+            balance += win; resetBets(); saveGame(); checkStatus();
+        }, 1200);
     }
 
     function checkStatus() {
         const btn = document.getElementById('play-btn');
         const total = Object.values(currentBets).reduce((a,b)=>a+b);
-        if (balance === 0 && total === 0) {
-            btn.innerText = "領取 $1000"; btn.classList.add('reload-mode');
-        } else {
-            btn.innerText = "開  獎"; btn.classList.remove('reload-mode');
-            btn.disabled = (total === 0);
-        }
+        if (balance === 0 && total === 0) { btn.innerText = "領取 $1000"; btn.classList.add('reload-mode'); }
+        else { btn.innerText = "開  獎"; btn.classList.remove('reload-mode'); btn.disabled = (total === 0); }
     }
 
     function resetBets() {
